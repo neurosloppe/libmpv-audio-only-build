@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+. "$DIR/env.sh"
+bash "$DIR/00-check-toolchain.sh"
+bash "$DIR/10-crossfile.sh"
+bash "$DIR/20-freetype.sh"
+bash "$DIR/21-fribidi.sh"
+bash "$DIR/22-harfbuzz.sh"
+bash "$DIR/23-libass.sh"
+bash "$DIR/24-libplacebo.sh"
+bash "$DIR/30-ffmpeg.sh"
+bash "$DIR/40-mpv.sh"
+bash "$DIR/50-verify.sh"
+echo "all done: $(cygpath -w "$PREFIX/bin/libmpv-2.dll")"

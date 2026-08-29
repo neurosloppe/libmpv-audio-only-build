@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+set -euo pipefail
+. "$(dirname "${BASH_SOURCE[0]}")/env.sh"
+rm -rf "$BUILD/ffmpeg"
+mkdir -p "$BUILD/ffmpeg"
+cd "$BUILD/ffmpeg"
+"$SRC/ffmpeg-$FFMPEG_VERSION/configure" \
+    --enable-cross-compile \
+    --cross-prefix=x86_64-w64-mingw32- \
+    --target-os=mingw32 \
+    --arch=x86_64 \
+    --ar=x86_64-w64-mingw32-gcc-ar \
+    --ranlib=x86_64-w64-mingw32-gcc-ranlib \
+    --pkg-config="$PKGCFG" \
+    --enable-static \
+    --disable-shared \
+    --disable-programs \
+    --disable-doc \
+    --disable-debug \
+    --enable-avcodec \
+    --enable-avfilter \
+    --enable-avformat \
+    --enable-swresample \
+    --enable-swscale \
+    --disable-avdevice \
+    --disable-pixelutils \
+    --disable-protocols \
+    --enable-protocol=file,http,https,tcp,udp,tls,data,pipe,async,cache,crypto,subfile \
+    --enable-demuxers \
+    --disable-decoders \
+    --enable-decoder=aac,aac_latm,ac3,eac3,dca,flac,mp1,mp2,mp3,opus,vorbis,cook,wavpack,alac,tta,ape,wmalossless,wmapro,wmav1,wmav2,pcm_s16le,pcm_s16be,pcm_s24le,pcm_s32le,pcm_f32le,pcm_u8,pcm_s8,pcm_alaw,pcm_mulaw,adpcm_ms,adpcm_ima_wav \
+    --disable-encoders \
+    --disable-muxers \
+    --disable-parsers \
+    --enable-parser=aac,aac_latm,ac3,flac,mpegaudio,opus,vorbis,dca,cook \
+    --disable-bsfs \
+    --enable-bsf=aac_adtstoasc,extract_extradata,null,setts \
+    --disable-filters \
+    --enable-filter=aformat,aresample,anull,volume,atempo,atrim,asetpts,asetnsamples,amix,amerge,pan,channelmap,channelsplit,asplit,afade,aloop,apad \
+    --disable-outdevs \
+    --disable-indevs \
+    --enable-zlib \
+    --enable-lzma \
+    --disable-bzlib \
+    --disable-iconv \
+    --enable-network \
+    --disable-version3 \
+    --enable-schannel \
+    --disable-autodetect \
+    --disable-libxml2 \
+    --disable-sdl2 \
+    --disable-xlib \
+    --disable-libdrm \
+    --disable-vaapi \
+    --disable-vdpau \
+    --disable-hwaccels \
+    --disable-vulkan \
+    --disable-videotoolbox \
+    --disable-mediacodec \
+    --disable-d3d11va \
+    --disable-dxva2 \
+    --disable-cuda-llvm \
+    --prefix="$PREFIX"
+make -j"$JOBS"
+make install
