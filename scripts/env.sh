@@ -7,8 +7,14 @@ PKGCFG="pkgconf"
 export PKG_CONFIG="$PKGCFG"
 export PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig:/usr/x86_64-w64-mingw32/sys-root/mingw/lib/pkgconfig"
 export PATH="$SCRIPTS/shims:$PATH"
-[ -f "$SRC/versions.env" ] || { echo "sources not fetched - run 'make fetch' first" >&2; exit 1; }
+[ -f "$SRC/versions.env" ] || { echo "sources not fetched - run 'make fetch' (frozen) or 'make latest' first" >&2; exit 1; }
 . "$SRC/versions.env"
+BUILD_MODE="${BUILD_MODE:-custom}"
+STUBS_ENABLED=0
+if [ "$BUILD_MODE" = "frozen" ] && [ ! -f "$ROOT/latest.lock" ]; then
+    STUBS_ENABLED=1
+fi
+export STUBS_ENABLED
 JOBS="$(nproc 2>/dev/null || echo 4)"
 
 meson_build() {

@@ -21,6 +21,8 @@ need jq
 need tar
 need git
 
+OVERRIDE_USED=0
+
 lock_get() {
     [ -f "$LOCK" ] || return 0
     grep -m1 "^$1=" "$LOCK" | cut -d= -f2- | tr -d '\r'
@@ -30,6 +32,7 @@ set_version() {
     local var="$1" latest="$2"
     if [ -n "${!var:-}" ]; then
         say "$var overridden via environment: ${!var}"
+        OVERRIDE_USED=1
         return 0
     fi
     if [ "${LATEST:-0}" = "1" ]; then
@@ -157,7 +160,30 @@ else
     say "extracted $FREETYPE_DIR"
 fi
 
+if [ "${LATEST:-0}" = "1" ]; then
+    BUILD_MODE=latest
+elif [ "$OVERRIDE_USED" = "1" ]; then
+    BUILD_MODE=custom
+    say "version overrides detected - stub libraries will NOT be applied"
+else
+    BUILD_MODE=frozen
+fi
+
+if [ "$BUILD_MODE" = "latest" ]; then
+    cat > latest.lock <<EOF
+FFMPEG_VERSION=${FFMPEG_VERSION}
+MPV_TAG=${MPV_TAG}
+LIBPLACEBO_TAG=${LIBPLACEBO_TAG}
+HARFBUZZ_TAG=${HARFBUZZ_TAG}
+FRIBIDI_TAG=${FRIBIDI_TAG}
+LIBASS_TAG=${LIBASS_TAG}
+FREETYPE_TAG=${FREETYPE_TAG}
+EOF
+    say "latest.lock written - this tree now builds the latest configuration (no stubs)"
+fi
+
 cat > versions.env <<EOF
+BUILD_MODE=${BUILD_MODE}
 FFMPEG_VERSION=${FFMPEG_VERSION}
 MPV_TAG=${MPV_TAG}
 MPV_VERSION=${MPV_VERSION}
@@ -173,18 +199,7 @@ FREETYPE_TAG=${FREETYPE_TAG}
 FREETYPE_VERSION=${FREETYPE_VERSION}
 EOF
 
-if [ "${LATEST:-0}" = "1" ]; then
-    cat > "$LOCK" <<EOF
-FFMPEG_VERSION=${FFMPEG_VERSION}
-MPV_TAG=${MPV_TAG}
-LIBPLACEBO_TAG=${LIBPLACEBO_TAG}
-HARFBUZZ_TAG=${HARFBUZZ_TAG}
-FRIBIDI_TAG=${FRIBIDI_TAG}
-LIBASS_TAG=${LIBASS_TAG}
-FREETYPE_TAG=${FREETYPE_TAG}
-EOF
-    say "versions.lock updated to the resolved latest versions"
-fi
+say "versions.env written (BUILD_MODE=${BUILD_MODE})"
 
 say "versions.env written"
 say "mpv meson ffmpeg requirements:"
