@@ -13,8 +13,8 @@ help:
 	@echo "make clean     remove build directory"
 	@echo "make distclean remove build directory, sources and prefix"
 	@echo ""
-	@echo "frozen: ~7.5 MB DLL with audio-only stubs (no libass/swscale/fonts/libplacebo)"
-	@echo "latest: ~17 MB DLL with real libraries - stub patches will NOT be applied"
+	@echo "frozen: ~7 MB DLL with audio-only stubs (no libass/swscale/fonts/libplacebo)"
+	@echo "latest: ~13 MB DLL with real libraries - stub patches will NOT be applied"
 
 frozen:
 	@if [ -f latest.lock ]; then \
@@ -56,7 +56,7 @@ libplacebo: crossfile
 libass: crossfile freetype fribidi harfbuzz
 	bash scripts/23-libass.sh
 
-ffmpeg: fetch
+ffmpeg:
 	bash scripts/30-ffmpeg.sh
 
 stub-libs: ffmpeg

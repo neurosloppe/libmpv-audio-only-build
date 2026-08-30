@@ -10,7 +10,7 @@ After `make frozen` you get, inside the project-local `prefix\` directory:
 
 | File | Purpose |
 |---|---|
-| `prefix\bin\libmpv-2.dll` | the library (~7.2 MB frozen / ~17.5 MB latest, single file, stripped, no runtime DLL dependencies) |
+| `prefix\bin\libmpv-2.dll` | the library (~7 MB frozen / ~13 MB latest, single file, stripped, no runtime DLL dependencies) |
 | `prefix\lib\libmpv.dll.a` | import library for linking your app |
 | `prefix\include\mpv\*.h` | client API headers (`client.h`, `render.h`, `stream_cb.h`) |
 
@@ -68,7 +68,7 @@ mode the mpv icon resource is also replaced by a minimal version-info block.
 **`make latest`** fetches the newest upstream releases instead (writes
 `latest.lock`), builds **without applying the stub patches** - the real
 libswscale/libass/freetype/fribidi/harfbuzz/libplacebo are compiled and linked
-(~17.5 MB DLL) - and runs the same verification. While `latest.lock` exists,
+(~13 MB DLL) - and runs the same verification. While `latest.lock` exists,
 `make frozen` refuses to run (delete `latest.lock` to switch back). Use latest
 deliberately: the build is only known-good for the frozen versions, and no
 patches are applied in latest mode.
@@ -95,18 +95,3 @@ To rebuild only the DLL after changing its options: `make mpv verify`.
 This repository contains build scripts for producing `libmpv-2.dll`. The repository itself is licensed under the MIT License.
 
 The resulting DLL incorporates third-party software, including components distributed under the GNU Lesser General Public License (LGPL). The exact licenses and versions depend on the build configuration and pinned dependency revisions.
-
-| Component | License |
-| --- | --- |
-| mpv (`-Dgpl=false`) | LGPL-2.1-or-later |
-| FFmpeg (`--disable-version3`) | LGPL-2.1-or-later, with individual files/components subject to their respective licenses |
-| libplacebo | LGPL-2.1-or-later |
-| FriBidi | LGPL-2.1-or-later |
-| libass | ISC |
-| FreeType | FTL |
-| HarfBuzz | MIT |
-| zlib | Zlib |
-
-In the default frozen configuration the libass/fribidi/freetype/harfbuzz/
-libplacebo components are stubbed out entirely and are **not part of the DLL** -
-their licenses apply only to `latest` builds.
