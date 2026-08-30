@@ -73,12 +73,20 @@ libswscale/libass/freetype/fribidi/harfbuzz/libplacebo are compiled and linked
 deliberately: the build is only known-good for the frozen versions, and no
 patches are applied in latest mode.
 
+`make -j8` parallelizes safely (the dependency graph is encoded in the Makefile).
+
 Useful targets:
 
 - `make help` - list all targets
+- `make fetch` - fetch only, using the frozen `versions.lock`
+- `make check` - verify the toolchain
+- `make deps` - cross-build the dependency libraries (auto-skips stubbed ones in frozen mode)
+- `make ffmpeg` - cross-build static ffmpeg
+- `make stub-libs` - compile the stub libraries (frozen mode only)
+- `make mpv` - build and install libmpv-2.dll
+- `make verify` - re-run checks + smoke test against the current DLL
 - `make clean` - remove the build directory (keeps sources and `prefix\`)
 - `make distclean` - remove `build\`, `src\`, `prefix\` and `latest.lock`
-- `make verify` - re-run checks + smoke test against the current DLL
 
 To rebuild only the DLL after changing its options: `make mpv verify`.
 
