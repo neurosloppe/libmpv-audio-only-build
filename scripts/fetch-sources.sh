@@ -114,6 +114,7 @@ MPV_VERSION="$(strip_v "$MPV_TAG")"
 say "mpv $MPV_VERSION"
 dl "https://github.com/mpv-player/mpv/archive/refs/tags/${MPV_TAG}.tar.gz" "mpv-${MPV_VERSION}.tar.gz"
 extract_to "mpv-${MPV_VERSION}.tar.gz" "mpv-${MPV_VERSION}"
+tar -xzf "mpv-${MPV_VERSION}.tar.gz" "mpv-${MPV_VERSION}/osdep/mpv.rc"
 
 set_version LIBPLACEBO_TAG "$LIBPLACEBO_LATEST"
 LIBPLACEBO_VERSION="$(strip_v "$LIBPLACEBO_TAG")"

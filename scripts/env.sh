@@ -6,7 +6,7 @@ PREFIX="$ROOT/prefix"
 PKGCFG="pkgconf"
 export PKG_CONFIG="$PKGCFG"
 export PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig:/usr/x86_64-w64-mingw32/sys-root/mingw/lib/pkgconfig"
-export PATH="$SCRIPTS/shims:$PATH"
+export PATH="/usr/bin:$SCRIPTS/shims:$PATH"
 [ -f "$SRC/versions.env" ] || { echo "sources not fetched - run 'make fetch' (frozen) or 'make latest' first" >&2; exit 1; }
 . "$SRC/versions.env"
 BUILD_MODE="${BUILD_MODE:-custom}"
