@@ -6,11 +6,11 @@ Built on a Cygwin host with the mingw-w64 cross toolchain.
 
 ## Result
 
-After `make` you get, inside the project-local `prefix\` directory:
+After `make frozen` you get, inside the project-local `prefix\` directory:
 
 | File | Purpose |
 |---|---|
-| `prefix\bin\libmpv-2.dll` | the library (~7.5 MB frozen / ~17.5 MB latest, single file, stripped, no runtime DLL dependencies) |
+| `prefix\bin\libmpv-2.dll` | the library (~7.2 MB frozen / ~17.5 MB latest, single file, stripped, no runtime DLL dependencies) |
 | `prefix\lib\libmpv.dll.a` | import library for linking your app |
 | `prefix\include\mpv\*.h` | client API headers (`client.h`, `render.h`, `stream_cb.h`) |
 
@@ -58,10 +58,12 @@ The frozen build fetches the exact versions pinned in `scripts/versions.lock`
 4. `mpv` - configure + build + install libmpv-2.dll (stripped)
 5. `verify` - export/import checks + WASAPI smoke test
 
-The stubs implement the ~140 libswscale/libass/libplacebo symbols mpv references
-as silent no-ops over opaque handles, so the linker resolves mpv's hard
-dependency chain without shipping 5.7 MB of video/font code. Video conversion,
-subtitles and the OSD become no-ops - irrelevant for audio playback.
+The stubs implement the ~175 libswscale/libass/libplacebo symbols mpv references
+(functions plus const data tables) as silent no-ops over opaque handles, so the
+linker resolves mpv's hard dependency chain without shipping ~5.5 MB of
+video/font code plus the C++ runtime it would drag in. Video conversion,
+subtitles and the OSD become no-ops - irrelevant for audio playback. In frozen
+mode the mpv icon resource is also replaced by a minimal version-info block.
 
 **`make latest`** fetches the newest upstream releases instead (writes
 `latest.lock`), builds **without applying the stub patches** - the real
