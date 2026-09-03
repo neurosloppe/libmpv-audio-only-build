@@ -13,7 +13,7 @@ help:
 	@echo "make clean     remove build directory"
 	@echo "make distclean remove build directory, sources and prefix"
 	@echo ""
-	@echo "frozen: ~7 MB DLL with audio-only stubs (no libass/swscale/fonts/libplacebo)"
+	@echo "frozen: ~5 MB DLL with audio-only stubs (no libass/swscale/fonts/libplacebo)"
 	@echo "latest: ~13 MB DLL with real libraries - stub patches will NOT be applied"
 
 frozen:

@@ -2,7 +2,7 @@
 
 Reproducible cross-build of a **single-file `libmpv-2.dll`** for Windows x86_64:
 an LGPL build of mpv stripped of video functionality.  
-Built on a Cygwin host with the mingw-w64 cross toolchain.
+Built on a Linux or Cygwin host with the mingw-w64 cross toolchain.
 
 ## Result
 
@@ -10,7 +10,7 @@ After `make frozen` you get, inside the project-local `prefix\` directory:
 
 | File | Purpose |
 |---|---|
-| `prefix\bin\libmpv-2.dll` | the library (~7 MB frozen / ~13 MB latest, single file, stripped, no runtime DLL dependencies) |
+| `prefix\bin\libmpv-2.dll` | the library (~5 MB frozen / ~13 MB latest, single file, stripped, no runtime DLL dependencies) |
 | `prefix\lib\libmpv.dll.a` | import library for linking your app |
 | `prefix\include\mpv\*.h` | client API headers (`client.h`, `render.h`, `stream_cb.h`) |
 
@@ -87,8 +87,6 @@ libswscale/libass/freetype/fribidi/harfbuzz/libplacebo are compiled and linked
 `make frozen` refuses to run (delete `latest.lock` to switch back). Use latest
 deliberately: the build is only known-good for the frozen versions, and no
 patches are applied in latest mode.
-
-`make -j8` parallelizes safely (the dependency graph is encoded in the Makefile).
 
 Useful targets:
 
