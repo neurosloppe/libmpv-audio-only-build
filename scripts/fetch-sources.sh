@@ -85,6 +85,7 @@ extract_to() {
 }
 
 FFMPEG_LATEST=""
+ZLIB_LATEST=""
 MPV_LATEST=""
 LIBPLACEBO_LATEST=""
 HARFBUZZ_LATEST=""
@@ -96,6 +97,7 @@ if [ "${LATEST:-0}" = "1" ]; then
     FFMPEG_TARBALL="$(wget -qO- https://ffmpeg.org/releases/ | grep -oE 'ffmpeg-[0-9]+(\.[0-9]+)+\.tar\.xz' | sort -uV | tail -1)"
     FFMPEG_LATEST="${FFMPEG_TARBALL#ffmpeg-}"
     FFMPEG_LATEST="${FFMPEG_LATEST%.tar.xz}"
+    ZLIB_LATEST="$(gh_latest madler/zlib)"
     MPV_LATEST="$(gh_latest mpv-player/mpv)"
     LIBPLACEBO_LATEST="$(gh_latest haasn/libplacebo)"
     HARFBUZZ_LATEST="$(gh_latest harfbuzz/harfbuzz)"
@@ -108,6 +110,11 @@ set_version FFMPEG_VERSION "$FFMPEG_LATEST"
 say "ffmpeg $FFMPEG_VERSION"
 dl "https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.xz" "ffmpeg-${FFMPEG_VERSION}.tar.xz"
 extract_to "ffmpeg-${FFMPEG_VERSION}.tar.xz" "ffmpeg-${FFMPEG_VERSION}"
+
+set_version ZLIB_VERSION "${ZLIB_LATEST#v}"
+say "zlib $ZLIB_VERSION"
+dl "https://github.com/madler/zlib/releases/download/v${ZLIB_VERSION}/zlib-${ZLIB_VERSION}.tar.gz" "zlib-${ZLIB_VERSION}.tar.gz"
+extract_to "zlib-${ZLIB_VERSION}.tar.gz" "zlib-${ZLIB_VERSION}"
 
 set_version MPV_TAG "$MPV_LATEST"
 MPV_VERSION="$(strip_v "$MPV_TAG")"
@@ -186,6 +193,7 @@ fi
 cat > versions.env <<EOF
 BUILD_MODE=${BUILD_MODE}
 FFMPEG_VERSION=${FFMPEG_VERSION}
+ZLIB_VERSION=${ZLIB_VERSION}
 MPV_TAG=${MPV_TAG}
 MPV_VERSION=${MPV_VERSION}
 LIBPLACEBO_TAG=${LIBPLACEBO_TAG}

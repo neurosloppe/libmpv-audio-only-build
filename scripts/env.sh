@@ -3,10 +3,26 @@ SRC="$ROOT/src"
 BUILD="$ROOT/build"
 SCRIPTS="$ROOT/scripts"
 PREFIX="$ROOT/prefix"
+case "$(uname -s)" in
+    CYGWIN*|MSYS*|MINGW*) HOST_KIND=cygwin ;;
+    *) HOST_KIND=linux ;;
+esac
+export HOST_KIND
 PKGCFG="pkgconf"
 export PKG_CONFIG="$PKGCFG"
-export PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig:/usr/x86_64-w64-mingw32/sys-root/mingw/lib/pkgconfig"
-export PATH="/usr/bin:$SCRIPTS/shims:$PATH"
+export PKG_CONFIG_LIBDIR="$PREFIX/lib/pkgconfig"
+if [ "$HOST_KIND" = "cygwin" ]; then
+    export PATH="/usr/bin:$SCRIPTS/shims:$PATH"
+else
+    export PATH="$SCRIPTS/shims:$PATH"
+fi
+pc_prefix() {
+    if command -v cygpath >/dev/null 2>&1; then
+        cygpath -m "$1"
+    else
+        printf '%s' "$1"
+    fi
+}
 [ -f "$SRC/versions.env" ] || { echo "sources not fetched - run 'make fetch' (frozen) or 'make latest' first" >&2; exit 1; }
 . "$SRC/versions.env"
 BUILD_MODE="${BUILD_MODE:-custom}"

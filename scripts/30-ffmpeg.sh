@@ -28,11 +28,11 @@ cd "$BUILD/ffmpeg"
     --enable-protocol=file,http,https,tcp,udp,tls,data,pipe,async,cache,crypto,subfile \
     --enable-demuxers \
     --disable-decoders \
-    --enable-decoder=aac,aac_latm,ac3,eac3,dca,flac,mp1,mp2,mp3,opus,vorbis,cook,wavpack,alac,tta,ape,wmalossless,wmapro,wmav1,wmav2,pcm_s16le,pcm_s16be,pcm_s24le,pcm_s32le,pcm_f32le,pcm_u8,pcm_s8,pcm_alaw,pcm_mulaw,adpcm_ms,adpcm_ima_wav \
+    --enable-decoder=aac,aac_latm,ac3,eac3,dca,flac,mp1,mp2,mp3,opus,vorbis,wavpack,alac,tta,ape,wmalossless,wmapro,wmav1,wmav2,pcm_s16le,pcm_s16be,pcm_s24le,pcm_s32le,pcm_f32le,pcm_u8,pcm_s8,pcm_alaw,pcm_mulaw,adpcm_ms,adpcm_ima_wav \
     --disable-encoders \
     --disable-muxers \
     --disable-parsers \
-    --enable-parser=aac,aac_latm,ac3,flac,mpegaudio,opus,vorbis,dca,cook \
+    --enable-parser=aac,aac_latm,ac3,flac,mpegaudio,opus,vorbis,dca \
     --disable-bsfs \
     --enable-bsf=aac_adtstoasc,extract_extradata,null,setts \
     --disable-filters \
@@ -40,12 +40,13 @@ cd "$BUILD/ffmpeg"
     --disable-outdevs \
     --disable-indevs \
     --enable-zlib \
-    --enable-lzma \
     --disable-bzlib \
     --disable-iconv \
     --enable-network \
     --disable-version3 \
     --enable-schannel \
+    --extra-cflags=-I"$PREFIX/include" \
+    --extra-ldflags=-L"$PREFIX/lib" \
     --disable-autodetect \
     --disable-libxml2 \
     --disable-sdl2 \

@@ -1,4 +1,4 @@
-.PHONY: all frozen latest fetch build check crossfile deps freetype fribidi harfbuzz libass libplacebo ffmpeg stub-libs mpv verify clean distclean help
+.PHONY: all frozen latest fetch build check crossfile zlib deps freetype fribidi harfbuzz libass libplacebo ffmpeg stub-libs mpv verify clean distclean help
 
 all: frozen
 
@@ -6,10 +6,10 @@ help:
 	@echo "make frozen    fetch frozen versions and build with stub libs (patches applied)"
 	@echo "make latest    fetch latest versions and build WITHOUT patches (real libraries)"
 	@echo "make fetch     fetch only, using the frozen versions.lock"
-	@echo "make deps      cross-build freetype, fribidi, harfbuzz, libass, libplacebo"
+	@echo "make deps      cross-build zlib, freetype, fribidi, harfbuzz, libass, libplacebo"
 	@echo "make ffmpeg    cross-build static ffmpeg"
 	@echo "make mpv       build libmpv-2.dll"
-	@echo "make verify    export/import checks plus WASAPI smoke test"
+	@echo "make verify    export/import checks (cygwin host: plus WASAPI smoke test)"
 	@echo "make clean     remove build directory"
 	@echo "make distclean remove build directory, sources and prefix"
 	@echo ""
@@ -39,9 +39,12 @@ check:
 crossfile: check
 	bash scripts/10-crossfile.sh
 
-deps: crossfile freetype fribidi harfbuzz libass libplacebo
+deps: crossfile zlib freetype fribidi harfbuzz libass libplacebo
 
-freetype: crossfile
+zlib: crossfile
+	bash scripts/19-zlib.sh
+
+freetype: crossfile zlib
 	bash scripts/20-freetype.sh
 
 fribidi: crossfile
@@ -56,7 +59,7 @@ libplacebo: crossfile
 libass: crossfile freetype fribidi harfbuzz
 	bash scripts/23-libass.sh
 
-ffmpeg:
+ffmpeg: zlib
 	bash scripts/30-ffmpeg.sh
 
 stub-libs: ffmpeg

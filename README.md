@@ -19,18 +19,22 @@ Properties of the DLL:
 - mpv 0.41.0 built with `-Dgpl=false` (LGPL-2.1+), `libmpv=true`, no player binary
 - ffmpeg 9.0.1 statically linked, LGPL-2.1+ (`--disable-version3`, `--enable-schannel`)
 - audio-only: WASAPI output, decoders limited to common audio codecs
-  (aac/ac3/dca/flac/mp3/opus/vorbis/cook/wavpack/alac/tta/ape/wma/pcm/adpcm),
+  (aac/ac3/dca/flac/mp3/opus/vorbis/wavpack/alac/tta/ape/wma/pcm/adpcm),
   demuxers + HTTP/HTTPS/file streaming enabled, video decoding disabled
 - all video outputs, hardware acceleration, scripting (lua/js) disabled
-- zlib/liblzma baked in statically - the DLL imports only Windows system DLLs
+- zlib baked in statically - the DLL imports only Windows system DLLs
 - frozen build: `libswscale`/`libass`/`libplacebo` (+ fonts) are replaced by
   audio-only stubs; `latest` build: all real libraries
 - fully stripped release binary
 
 ## Requirements
 
-Windows with **Cygwin**.  
-Inside Cygwin you need:
+The build runs on a cygwin host (Windows) or a Linux host - the host is
+auto-detected, all targets work unchanged on both.
+Developed and tested on Alpine Linux (WSL2); any modern Linux with the
+mingw-w64 toolchain and meson >= 1.x should work.
+
+On cygwin you need:
 
 Base tools: `make`, `git`, `python3`, `pkgconf`,
 `wget`, `jq`, `tar`, `bash`.
@@ -40,8 +44,19 @@ https://cygwin.com/install.html and install with (adjust `--root` to your Cygwin
 location):
 
 ```
-setup-x86_64.exe -q --root D:\cygwin -P meson,ninja,nasm,mingw64-x86_64-gcc-g++,mingw64-x86_64-zlib,mingw64-x86_64-xz,mingw64-x86_64-pkg-config
+setup-x86_64.exe -q --root D:\cygwin -P meson,ninja,nasm,mingw64-x86_64-gcc-g++
 ```
+
+On Linux you need: `make`, `git`, `python3`, `pkgconf`, `wget`, `jq`,
+`tar`, `xz`, `meson`, `ninja`, `nasm` and the `mingw-w64` cross toolchain
+(`x86_64-w64-mingw32-gcc`, `g++`, binutils). For example on Alpine:
+
+```
+apk add make git python3 pkgconf wget jq xz tar meson ninja-build nasm mingw-w64-gcc
+```
+
+zlib is cross-built from source into the project-local `prefix\` directory on
+every host - no distro package is needed for it.
 
 ## Build
 
@@ -52,11 +67,11 @@ make frozen
 The frozen build fetches the exact versions pinned in `scripts/versions.lock`
 (internet required) and:
 
-1. `deps` - libplacebo builds real; freetype/fribidi/harfbuzz/libass are skipped
+1. `deps` - cross-builds static zlib; libplacebo builds real; freetype/fribidi/harfbuzz/libass are skipped
 2. `ffmpeg` - cross-build static ffmpeg (audio subset)
 3. `stub-libs` - compile the audio-only stub libraries (`scripts/stubs/`)
 4. `mpv` - configure + build + install libmpv-2.dll (stripped)
-5. `verify` - export/import checks + WASAPI smoke test
+5. `verify` - export/import checks (cygwin host: + WASAPI smoke test)
 
 The stubs implement the ~175 libswscale/libass/libplacebo symbols mpv references
 (functions plus const data tables) as silent no-ops over opaque handles, so the
@@ -80,11 +95,12 @@ Useful targets:
 - `make help` - list all targets
 - `make fetch` - fetch only, using the frozen `versions.lock`
 - `make check` - verify the toolchain
-- `make deps` - cross-build the dependency libraries (auto-skips stubbed ones in frozen mode)
+- `make zlib` - cross-build static zlib
+- `make deps` - cross-build zlib and the dependency libraries (auto-skips stubbed ones in frozen mode)
 - `make ffmpeg` - cross-build static ffmpeg
 - `make stub-libs` - compile the stub libraries (frozen mode only)
 - `make mpv` - build and install libmpv-2.dll
-- `make verify` - re-run checks + smoke test against the current DLL
+- `make verify` - re-run export/import checks against the current DLL (cygwin only: plus WASAPI smoke test)
 - `make clean` - remove the build directory (keeps sources and `prefix\`)
 - `make distclean` - remove `build\`, `src\`, `prefix\` and `latest.lock`
 

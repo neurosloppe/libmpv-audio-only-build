@@ -23,6 +23,10 @@ fi
 echo "OK: system DLLs only, single-file distribution"
 echo "== ffmpeg static libs =="
 ls "$PREFIX/lib"/libav*.a "$PREFIX/lib"/libsw*.a
+if [ "$HOST_KIND" != "cygwin" ]; then
+    echo "smoke test skipped: requires a cygwin host (WASAPI playback)"
+    exit 0
+fi
 echo "== smoke test =="
 mkdir -p "$BUILD/smoke"
 python3 - "$BUILD/smoke/sine.wav" <<'PYEOF'

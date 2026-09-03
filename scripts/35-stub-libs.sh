@@ -22,7 +22,7 @@ cp "$SRC/libass-$LIBASS_VERSION/libass/ass.h" "$PREFIX/include/ass/"
 cp "$SRC/libass-$LIBASS_VERSION/libass/ass_types.h" "$PREFIX/include/ass/"
 "$CC" -c "$SCRIPTS/stubs/libass_stub.c" -I"$PREFIX/include" -o "$STUBBUILD/libass_stub.o"
 
-/usr/bin/python3 "$SRC/libplacebo-$LIBPLACEBO_VERSION/src/version.py" \
+python3 "$SRC/libplacebo-$LIBPLACEBO_VERSION/src/version.py" \
     "$SRC/libplacebo-$LIBPLACEBO_VERSION/src/version.h.in" \
     "$STUBBUILD/plinc/libplacebo/version.h" \
     "$SRC/libplacebo-$LIBPLACEBO_VERSION/src" \
@@ -47,7 +47,7 @@ for entry in $PCCFG; do
     ver="${entry##*:}"
     base="${name#lib}"
     cat > "$PREFIX/lib/pkgconfig/$name.pc" <<EOF
-prefix=$(cygpath -m "$PREFIX")
+prefix=$(pc_prefix "$PREFIX")
 libdir=\${prefix}/lib
 includedir=\${prefix}/include
 
