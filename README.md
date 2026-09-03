@@ -20,7 +20,7 @@ Properties of the DLL:
 - ffmpeg 9.0.1 statically linked, LGPL-2.1+ (`--disable-version3`, `--enable-schannel`)
 - audio-only: WASAPI output, decoders limited to common audio codecs
   (aac/ac3/dca/flac/mp3/opus/vorbis/wavpack/alac/tta/ape/wma/pcm/adpcm),
-  demuxers + HTTP/HTTPS/file streaming enabled, video decoding disabled
+  demuxers limited to audio containers + HTTP/HTTPS/file streaming enabled, video decoding disabled
 - all video outputs, hardware acceleration, scripting (lua/js) disabled
 - zlib baked in statically - the DLL imports only Windows system DLLs
 - frozen build: `libswscale`/`libass`/`libplacebo` (+ fonts) are replaced by

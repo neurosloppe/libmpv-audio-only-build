@@ -26,7 +26,8 @@ cd "$BUILD/ffmpeg"
     --disable-pixelutils \
     --disable-protocols \
     --enable-protocol=file,http,https,tcp,udp,tls,data,pipe,async,cache,crypto,subfile \
-    --enable-demuxers \
+    --disable-demuxers \
+    --enable-demuxer=aac,ac3,aiff,ape,asf,caf,dts,dtshd,flac,matroska,mov,mp3,ogg,tta,wav,w64,wv \
     --disable-decoders \
     --enable-decoder=aac,aac_latm,ac3,eac3,dca,flac,mp1,mp2,mp3,opus,vorbis,wavpack,alac,tta,ape,wmalossless,wmapro,wmav1,wmav2,pcm_s16le,pcm_s16be,pcm_s24le,pcm_s32le,pcm_f32le,pcm_u8,pcm_s8,pcm_alaw,pcm_mulaw,adpcm_ms,adpcm_ima_wav \
     --disable-encoders \
